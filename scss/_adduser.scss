@@ -1,0 +1,100 @@
+.container-fluid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.formField {
+  flex: 0 0 30%;
+  padding: 20px;
+}
+
+.list-user-Field {
+  flex: 0 0 70%;
+  padding: 20px;
+}
+
+@media (max-width: 767px) {
+  .formField,
+  .list-user-Field {
+    flex: 0 0 100%;
+  }
+}
+.container-fluid .add-user {
+  margin: 0 1rem;
+  border: 2px solid #00a6ff67;
+  border-radius: 10px;
+}
+
+.add-user fieldset {
+  margin: 1rem;
+}
+
+.content-title {
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  border-left: 4px solid #0072b1;
+}
+
+.container-fluid h2 {
+  color: #0072b1;
+  font-weight: 700;
+  margin-left: 0.7rem;
+}
+
+@media only screen and (min-width: 600px) {
+  .container-fluid h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Media query for small devices like phones (portrait) */
+@media only screen and (max-width: 599px) {
+  .container-fluid h2 {
+    font-size: 1rem;
+  }
+}
+
+.content-title i {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.responseMessage {
+  font-size: 1.2rem;
+  text-align: center;
+  margin-top: 2rem;
+  padding: 20px;
+  color: rgb(83, 250, 83);
+}
+
+.users {
+  margin-right: 2rem;
+}
+
+.users table,
+th,
+td {
+  border: 1px solid #00a6ffc0;
+  border-collapse: collapse;
+}
+
+.users table {
+  margin-left: 1rem;
+  width: 100%;
+}
+
+.users table th {
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background-color: #e7e7e7;
+  text-align: center;
+}
+
+.users table td {
+  font-size: 1rem;
+  text-transform: capitalize;
+  text-align: center;
+}
