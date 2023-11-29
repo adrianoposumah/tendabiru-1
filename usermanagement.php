@@ -23,7 +23,7 @@ session_start();
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>tendaBiru - Daily Usage</title>
+    <title>tendaBiru - User Management</title>
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -35,6 +35,29 @@ session_start();
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <link href="scss/sb-admin-2.css" rel="stylesheet">
 
+    <style>
+        @media only screen and (min-width: 600px) {
+        .users table th {
+            font-size: 1.2rem;
+        }
+        .users table td {
+            font-size: 1rem;
+        }
+        }
+
+        /* Media query for small devices like phones (portrait) */
+        @media only screen and (max-width: 599px) {
+        .container-fluid {
+            margin-left: -1rem;
+        }
+        .users table th {
+            font-size: 0.8rem;
+        }
+        .users table td {
+            font-size: 0.7rem;
+        }
+        }
+    </style>
 
 </head>
 
@@ -228,8 +251,8 @@ session_start();
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>First Name</th>
-                                            <th>Last Name</th>
+                                            <!-- <th>First Name</th> -->
+                                            <th>Full Name</th>
                                             <th>Username</th>
                                             <th>Role</th>
                                             <th>Action</th>
@@ -239,8 +262,8 @@ session_start();
                                         <?php foreach($users as $index => $user){ ?>
                                             <tr>
                                                 <td><?= $index +1 ?></td>
-                                                <td class="firstname"><?= $user['firstName'] ?></td>
-                                                <td class="lastname"><?= $user['lastName'] ?></td>
+                                                <!-- <td class="firstname"></td> -->
+                                                <td class="lastname"><?= $user['firstName'] ?> <?= $user['lastName'] ?></td>
                                                 <td class="username"><?= $user['username'] ?></td>
                                                 <td class="level"><?= $user['level'] ?></td>
                                                 <td >
@@ -466,9 +489,7 @@ session_start();
 
     var scriptInstance = new Script();
     scriptInstance.initialize();
-</script>
-
-
+    </script>
 
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>

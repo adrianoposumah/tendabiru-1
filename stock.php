@@ -6,6 +6,9 @@ session_start();
 	if($_SESSION['level']==""){
 		header("location:login.php?pesan=login_dulu_kakak^^");
 	}
+    $_SESSION['table'] = 'user';
+    $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
+    $users = include('show-users.php');
  
 	?>
 
@@ -30,6 +33,49 @@ session_start();
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="scss/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Custom Style -->
+    <style>
+        .list-stock-Field {
+        flex: 0 0 100%;
+        padding: 20px;
+        }
+
+        .stocks {
+        margin-right: 2rem;
+        }
+
+        .stocks table,
+        th,
+        td {
+        border: 1px solid #00a6ffc0;
+        border-collapse: collapse;
+        }
+
+        .stocks table {
+        margin-left: 1rem;
+        width: 100%;
+        }
+
+        .stocks table th {
+        font-size: 1.2rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        background-color: #e7e7e7;
+        text-align: center;
+        }
+
+        .stocks table td {
+        font-size: 1rem;
+        text-transform: capitalize;
+        text-align: center;
+        }
+
+        .btn-addstock {
+            margin-right: 1rem;
+        }
+    </style>
 
 </head>
 
@@ -163,32 +209,59 @@ session_start();
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-
-                    <!-- Content Row -->
-                    <div class="row">
-
-
-                    <!-- Content Row -->
-
-                    <div class="row">
-
-                    <!-- Content Row -->
-                    <div class="row">
-
-                        <!-- Content Column -->
-                        <div class="col-lg-6 mb-4">
-
+                    <div class="list-stock-Field">
+                        <div class="content-title d-flex justify-content-between align-items-center">
+                            <h2 href="">
+                                <i class="fas fa-fw fa-table"></i>List Stock
+                            </h2>
+                            <button class="btn btn-primary btn-addstock" data-toggle="modal" data-target="#add-stockModal">Tambah Stock</button>
+                        </div>
+                        <div class="section_content">
+                            <div class="stocks">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Nama Produk</th>
+                                            <th>Deskripsi</th>
+                                            <!-- <th>Gambar</th>
+                                            <th>Dibuat Oleh</th>
+                                            <th>Created by</th>
+                                            <th>created at</th>
+                                            <th>Update At</th> -->
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach($users as $index => $user){ ?>
+                                            <tr>
+                                                <td><?= $index +1 ?></td>
+                                                <td class="firstname"><?= $user['lastName'] ?></td>
+                                                <td class="lastname"><?= $user['firstName'] ?> </td>
+                                                <!-- <td class="username"><?= $user['username'] ?></td>
+                                                <td class="level"><?= $user['level'] ?></td>
+                                                <td class="level"><?= $user['level'] ?></td>
+                                                <td class="level"><?= $user['level'] ?></td>
+                                                <td class="level"><?= $user['level'] ?></td> -->
+                                                <td >
+                                                    <a href="#" data-toggle="modal" class="updateUser" data-target="#editModal"
+                                                    data-userid="<?= $user['id'] ?>"
+                                                    ><i class="fa-solid fa-pencil" ></i> Edit</a>
+                                                    <a href="" class="deleteUser" 
+                                                    data-userid="<?= $user['id'] ?>"
+                                                    data-fname="<?= $user['firstName'] ?>"
+                                                    data-lname="<?= $user['lastName'] ?>"
+                                                    ><i class="fa-solid fa-trash"></i> Delete</a>
+                                                </td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
                 </div>
-                <!-- /.container-fluid -->
-
-            </div>
-            <!-- End of Main Content -->
-            <!-- End of Footer -->
-
-        </div>
         <!-- End of Content Wrapper -->
 
     </div>
@@ -198,6 +271,66 @@ session_start();
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
+
+    <!-- Add Modal -->
+    <div class="modal fade" id="add-stockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Tambahkan Produk Baru</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="user-add.php" class="add-user" method="post">
+                            <fieldset>
+                                <div class="form-group">
+                                    <label for="productName">Masukan Nama Produk</label>
+                                    <input type="text" id="productName" name="productName" class="form-control" placeholder="Nama Produk" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Masukan Deskripsi</label>
+                                    <textarea type="text" id="description" name="description" class="form-control" placeholder="Deskripsi" required></textarea>
+                                </div>
+                                <!-- <div class="form-group">
+                                    <label for="username">Input Username</label>
+                                    <input type="text" id="username" name="username" class="form-control" placeholder="Username" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Input Password</label>
+                                    <input type="text" id="password" name="password" class="form-control" placeholder="Password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="level">Select Role</label>
+                                    <select id="level" name="level" class="form-control">
+                                        <option>Manager</option>
+                                        <option>Staff</option>
+                                        <option>Supplier</option>
+                                    </select>
+                                </div>            -->
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary" data-target="#addSuccess">Add Produk</button>
+                                </div>
+                            </fieldset>
+                        </form>
+                        <?php
+                            if(isset($_SESSION['response'])) {
+                                $response_message = $_SESSION['response']['message'];
+                                $is_success = $_SESSION['response']['success'];
+                        ?>
+                        <div class="responseMessage">
+                            <p class="<?= $is_success ? 'responseMessage__success' : 'responseMessage__error' ?>">
+                                <?= $response_message ?>
+                            </p>
+                        </div>
+                        <?php  unset($_SESSION['response']); } ?>
+                    </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -219,6 +352,175 @@ session_start();
         </div>
     </div>
 
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modalTitle">#TITLE#</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" id="modalBody">
+            #message#
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary">OK</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Modal Notification -->
+    <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modalNotificationTitle">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" id="modalNotificationMessage">
+            ...
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Simpan Perubahan</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Script -->
+    <script src="js/script.js"></script>
+    <script>
+    function Script() {
+        this.initialize = function () {
+            this.registerEvents();
+        },
+
+        this.registerEvents = function () {
+            document.addEventListener('click', function (e) {
+                targetElement = e.target
+                var classList = targetElement.classList;
+                
+
+
+                if (classList.contains('deleteUser')) {
+                    e.preventDefault();
+                    userId =targetElement.dataset.userid;
+                    fname =targetElement.dataset.fname;
+                    lname =targetElement.dataset.lname;
+                    fullName = fname + ' ' +lname;
+                    
+
+                    if(window.confirm('Are you sure to delete ' + fullName + ' ?')) {
+                        $.ajax({
+                            method: 'POST',
+                            data: {
+                                user_id:userId,
+                                f_name:fname,
+                                l_name:lname,
+                            },
+                            url: 'delete-user.php',
+                            dataType: 'json',
+                            success: function(data){
+                                if(data.success){                 
+                                        $('#modalNotificationTitle').text('SUCCESS');
+                                        $('#modalNotificationMessage').text(data.message);
+                                        $('#notificationModal').modal('show');
+                                        $('#notificationModal').find('.btn-primary').click(function () {
+                                            location.reload();
+                                        });                                   
+                                } else window.alert(data.message)
+                            }
+                        })
+                    } else {
+                        console.log('will not delete');
+                    }
+                }
+
+                
+
+                if (classList.contains('updateUser')) {
+                    e.preventDefault();
+                    
+                    firstname = targetElement.closest('tr'). querySelector('td.firstname').innerHTML;
+                    lastname = targetElement.closest('tr'). querySelector('td.lastname').innerHTML;
+                    username = targetElement.closest('tr'). querySelector('td.username').innerHTML;
+                    //level = targetElement.closest('tr'). querySelector('td.level').innerHTML;
+                    userId = targetElement.dataset.userid;
+
+                    $('#modalTitle').text('Update User ' + firstname + ' ' + lastname + ' ?');
+                    $('#modalBody').html(`
+                        <form>
+                            <div class="form-group">
+                                <label for="firstname" class="col-form-label">First Name:</label>
+                                <input type="text" class="form-control" id="firstnameUp" value="${firstname}">
+                            </div>
+                            <div class="form-group">
+                                <label for="lastname" class="col-form-label">Last Name:</label>
+                                <input type="text" class="form-control" id="lastnameUp" value="${lastname}">
+                            </div>
+                            <div class="form-group">
+                                <label for="username" class="col-form-label">Username:</label>
+                                <input type="text" class="form-control" id="usernameUp" value="${username}">
+                            </div>
+                        </form>
+                    `);
+
+                    $('#editModal').find('.btn-primary').click(function () {
+                        // Your callback logic here
+                        var isUpdate = true; // You may need to determine this based on user action
+                        callback(isUpdate);
+                    });
+
+                    function callback(isUpdate) {
+                        if (isUpdate) { // if the user clicks the 'OK' button.
+                            $.ajax({
+                                method: 'POST',
+                                data: {
+                                    userId: userId,
+                                    f_name: document.getElementById('firstnameUp').value,
+                                    l_name: document.getElementById('lastnameUp').value,
+                                    username: document.getElementById('usernameUp').value,
+                                    //level: document.getElementById('level').value,
+                                },
+                                url: 'update-user.php', // Replace with the actual URL for your server-side script
+                                dataType: 'json',
+                                success: function (data) {
+                                    if (data.success) {
+                                        $('#editModal').modal('hide');
+                                        $('#modalNotificationTitle').text('SUCCESS');
+                                        $('#modalNotificationMessage').text('User berhasil Diperbarui');
+                                        $('#notificationModal').modal('show');
+                                        $('#notificationModal').find('.btn-primary').click(function () {
+                                            location.reload();
+                                        });
+
+                                    } else {
+                                        $('#editModal').modal('hide');
+                                        $('#modalNotificationTitle').text('GAGAL');
+                                        $('#modalNotificationMessage').text('User gagal Diperbarui');
+                                        $('#notificationModal').modal('show');
+                                    }
+                                },
+                            });
+                        }
+                    }
+
+                }
+            });
+        }
+    }
+
+    var scriptInstance = new Script();
+    scriptInstance.initialize();
+    </script>
+
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -228,13 +530,14 @@ session_start();
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
+    <script src="https://kit.fontawesome.com/bfff52efaa.js" crossorigin="anonymous"></script>
 
     <!-- Page level plugins -->
-    <script src="vendor/chart.js/Chart.min.js"></script>
+    <!-- <script src="vendor/chart.js/Chart.min.js"></script> -->
 
     <!-- Page level custom scripts -->
-    <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
+    <!-- <script src="js/demo/chart-area-demo.js"></script>
+    <script src="js/demo/chart-pie-demo.js"></script> -->
 
 </body>
 
