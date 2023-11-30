@@ -64,7 +64,7 @@ session_start();
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                Interface
+                Stock
             </div>
 
             <!-- Nav Item - Stock -->
@@ -73,6 +73,15 @@ session_start();
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Stock</span></a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="stock-view.php">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Stock View</span></a>
+            </li>
+
+            <div class="sidebar-heading mt-2">
+                Orders
+            </div>
 
             <!-- Nav Item - Orders -->
             <li class="nav-item">
@@ -80,6 +89,16 @@ session_start();
                     <i class="fas fa-fw fa-table"></i>
                     <span>Orders</span></a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="create-orders.php">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Create Orders</span></a>
+            </li>
+
+
+            <div class="sidebar-heading mt-2">
+                Reports
+            </div>
 
                  <!-- Nav Item - Delivery -->
                  <li class="nav-item">
@@ -101,6 +120,10 @@ session_start();
                     <i class="fas fa-fw fa-table"></i>
                     <span>Daily usage</span></a>
             </li>
+
+            <div class="sidebar-heading mt-2">
+                Setting
+            </div>
 
                  <!-- Nav Item - User Management -->
                  <li class="nav-item">
