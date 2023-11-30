@@ -164,13 +164,13 @@ session_start();
             </div>
 
             <!-- Nav Item - Stock -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="stock.php">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Stock</span></a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="stock-view.php">
+            <li class="nav-item active">
+                <a class="nav-link" href="stock.php">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Stock View</span></a>
             </li>
@@ -269,7 +269,6 @@ session_start();
                             <h2 href="">
                                 <i class="fas fa-fw fa-table"></i>List Produk
                             </h2>
-                            <button class="btn btn-primary btn-addstock" data-toggle="modal" data-target="#add-stockModal">Tambah Stock</button>
                         </div>
                         <div class="section_content">
                             <div class="stocks">
@@ -280,10 +279,10 @@ session_start();
                                             <th>Gambar</th>
                                             <th>Nama Produk</th>
                                             <th class="description-title">Deskripsi</th>
-                                            <th>Created by</th>
-                                            <th>created at</th>
-                                            <th>Update At</th>
-                                            <th>Action</th>
+                                            <th>Quantity</th>
+                                            <th>Status</th>
+                                            <th>Flag</th>
+                                            <!-- <th>Action</th> -->
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -295,18 +294,10 @@ session_start();
                                                 </td>
                                                 <td class="lastname"><?= $product['productName'] ?> </td>
                                                 <td class="username product-description"><?= $product['description'] ?></td>
-                                                <td class="level"><?= $product['created_by'] ?></td>
-                                                <td><?= $product['created_at'] ?></td>
-                                                <td><?= $product['updated_at'] ?></td>
-                                                <td >
-                                                    <a href="#" data-toggle="modal" class="updateProduct" data-target="#editModal"
-                                                    data-pid="<?= $product['productId'] ?>"
-                                                    ><i class="fa-solid fa-pencil" ></i> Edit</a>
-                                                    <a href="" class="deleteProduct" 
-                                                    data-pid="<?= $product['productId'] ?>"
-                                                    data-pname="<?= $product['productName'] ?>"
-                                                    ><i class="fa-solid fa-trash"></i> Delete</a>
-                                                </td>
+                                                <td class="level">100</td>
+                                                <td>Kritis : Sedang : Banyak</td>
+                                                <td>Tersedia : Tidak Tersedia</td>
+                                                <!-- <td ></td> -->
                                             </tr>
                                         <?php } ?>
                                     </tbody>
@@ -327,52 +318,6 @@ session_start();
     </a>
 
     <!-- Add Modal -->
-    <div class="modal fade" id="add-stockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Tambahkan Produk Baru</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="user-add.php" class="add-user" method="post" enctype="multipart/form-data">
-                            <fieldset>
-                                <div class="form-group">
-                                    <label for="productName">Masukan Nama Produk</label>
-                                    <input type="text" id="productName" name="productName" class="form-control" placeholder="Nama Produk" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="description">Masukan Deskripsi</label>
-                                    <textarea type="text" id="description" name="description" class="form-control" placeholder="Deskripsi"></textarea>
-                                </div>
-                                <div class="custom-file">
-                                    <input type="file" id="image" name="image" class="custom-file-input" required>
-                                    <label for="image" class="custom-file-label">Masukan Gambar Produk</label>
-                                </div>
-                                <div class="modal-footer">
-                                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-primary" data-target="#addSuccess">Add Produk</button>
-                                </div>
-                            </fieldset>
-                        </form>
-                        <?php
-                            if(isset($_SESSION['response'])) {
-                                $response_message = $_SESSION['response']['message'];
-                                $is_success = $_SESSION['response']['success'];
-                        ?>
-                        <div class="responseMessage">
-                            <p class="<?= $is_success ? 'responseMessage__success' : 'responseMessage__error' ?>">
-                                <?= $response_message ?>
-                            </p>
-                        </div>
-                        <?php  unset($_SESSION['response']); } ?>
-                    </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -395,25 +340,6 @@ session_start();
     </div>
 
     <!-- Edit Modal -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="modalTitle">#TITLE#</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body" id="modalBody">
-            #message#
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary">OK</button>
-        </div>
-        </div>
-    </div>
-    </div>
 
     <!-- Modal Notification -->
     <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
