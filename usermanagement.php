@@ -7,8 +7,10 @@ session_start();
 		header("location:login.php?pesan=login_dulu_kakak^^");
 	}
     $_SESSION['table'] = 'user';
+    $_SESSION['redirect_to'] = 'usermanagement.php';
+
     $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
-    $users = include('show-users.php');
+    $users = include('show.php');
  
 	?>
 
@@ -201,12 +203,12 @@ session_start();
                         <form action="user-add.php" class="add-user" method="post">
                             <fieldset>
                                 <div class="form-group">
-                                    <label for="firstname">Input FirstName</label>
-                                    <input type="text" id="firstname" name="firstname" class="form-control" placeholder="First Name" required>
+                                    <label for="firstName">Input FirstName</label>
+                                    <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="lastname">Input LastName</label>
-                                    <input type="text" id="lastname" name="lastname" class="form-control" placeholder="Last Name" required>
+                                    <label for="lastName">Input LastName</label>
+                                    <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="username">Input Username</label>
@@ -251,7 +253,7 @@ session_start();
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <!-- <th>First Name</th> -->
+                                            <th>First Name</th>
                                             <th>Full Name</th>
                                             <th>Username</th>
                                             <th>Role</th>
@@ -262,8 +264,8 @@ session_start();
                                         <?php foreach($users as $index => $user){ ?>
                                             <tr>
                                                 <td><?= $index +1 ?></td>
-                                                <!-- <td class="firstname"></td> -->
-                                                <td class="lastname"><?= $user['firstName'] ?> <?= $user['lastName'] ?></td>
+                                                <td class="firstName"><?= $user['firstName'] ?> </td>
+                                                <td class="lastName"><?= $user['lastName'] ?></td>
                                                 <td class="username"><?= $user['username'] ?></td>
                                                 <td class="level"><?= $user['level'] ?></td>
                                                 <td >
@@ -391,21 +393,22 @@ session_start();
                         $.ajax({
                             method: 'POST',
                             data: {
-                                user_id:userId,
-                                f_name:fname,
-                                l_name:lname,
+                                id:userId,
+                                table: "user"
                             },
-                            url: 'delete-user.php',
+                            url: 'delete.php',
                             dataType: 'json',
                             success: function(data){
+                                message = data.success ?
+                                    fullName + ' Berhasil Dihapus!' : 'Gagal Dihapus!'
                                 if(data.success){                 
                                         $('#modalNotificationTitle').text('SUCCESS');
-                                        $('#modalNotificationMessage').text(data.message);
+                                        $('#modalNotificationMessage').text(message);
                                         $('#notificationModal').modal('show');
                                         $('#notificationModal').find('.btn-primary').click(function () {
                                             location.reload();
                                         });                                   
-                                } else window.alert(data.message)
+                                } else window.alert(message)
                             }
                         })
                     } else {
@@ -418,22 +421,22 @@ session_start();
                 if (classList.contains('updateUser')) {
                     e.preventDefault();
                     
-                    firstname = targetElement.closest('tr'). querySelector('td.firstname').innerHTML;
-                    lastname = targetElement.closest('tr'). querySelector('td.lastname').innerHTML;
+                    firstName = targetElement.closest('tr'). querySelector('td.firstName').innerHTML;
+                    lastName = targetElement.closest('tr'). querySelector('td.lastName').innerHTML;
                     username = targetElement.closest('tr'). querySelector('td.username').innerHTML;
                     //level = targetElement.closest('tr'). querySelector('td.level').innerHTML;
                     userId = targetElement.dataset.userid;
 
-                    $('#modalTitle').text('Update User ' + firstname + ' ' + lastname + ' ?');
+                    $('#modalTitle').text('Update User ' + firstName + ' ' + lastName + ' ?');
                     $('#modalBody').html(`
                         <form>
                             <div class="form-group">
-                                <label for="firstname" class="col-form-label">First Name:</label>
-                                <input type="text" class="form-control" id="firstnameUp" value="${firstname}">
+                                <label for="firstName" class="col-form-label">First Name:</label>
+                                <input type="text" class="form-control" id="firstNameUp" value="${firstName}">
                             </div>
                             <div class="form-group">
-                                <label for="lastname" class="col-form-label">Last Name:</label>
-                                <input type="text" class="form-control" id="lastnameUp" value="${lastname}">
+                                <label for="lastName" class="col-form-label">Last Name:</label>
+                                <input type="text" class="form-control" id="lastNameUp" value="${lastName}">
                             </div>
                             <div class="form-group">
                                 <label for="username" class="col-form-label">Username:</label>
@@ -450,13 +453,17 @@ session_start();
 
                     function callback(isUpdate) {
                         if (isUpdate) { // if the user clicks the 'OK' button.
+                            var firstNameUp = $('#firstNameUp').val();
+                            var lastNameUp = $('#lastNameUp').val();
+                            var usernameUp = $('#usernameUp').val();
+
                             $.ajax({
                                 method: 'POST',
                                 data: {
-                                    userId: userId,
-                                    f_name: document.getElementById('firstnameUp').value,
-                                    l_name: document.getElementById('lastnameUp').value,
-                                    username: document.getElementById('usernameUp').value,
+                                        userId: userId,
+                                        f_name: firstNameUp,
+                                        l_name: lastNameUp,
+                                        username: usernameUp,
                                     //level: document.getElementById('level').value,
                                 },
                                 url: 'update-user.php', // Replace with the actual URL for your server-side script

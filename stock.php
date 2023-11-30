@@ -6,10 +6,10 @@ session_start();
 	if($_SESSION['level']==""){
 		header("location:login.php?pesan=login_dulu_kakak^^");
 	}
-    $_SESSION['table'] = 'user';
-    $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
-    $users = include('show-users.php');
- 
+    $_SESSION['table'] = 'products';
+    $_SESSION['redirect_to'] = 'stock.php';
+    //$user = isset($_SESSION['products']) ? $_SESSION['products'] : null;
+    $products = include('show.php');
 	?>
 
 <!DOCTYPE html>
@@ -74,6 +74,56 @@ session_start();
 
         .btn-addstock {
             margin-right: 1rem;
+        }
+        .product-image img {
+        width: 150px; 
+        height: 150px;
+        object-fit: cover; 
+        border-radius: 50%;
+        }
+
+        .product-description {
+        max-width: 200px; /* Adjust the value as needed */
+        overflow: hidden;
+        /* white-space: nowrap; */
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        }
+
+        @media only screen and (min-width: 600px) {
+        .stocks table th {
+            font-size: 1.2rem;
+        }
+        .stocks table td {
+            font-size: 1rem;
+        }
+        }
+
+        /* Media query for small devices like phones (portrait) */
+        @media only screen and (max-width: 599px) {
+        .container-fluid {
+            margin-left: -1rem;
+        }
+        .stocks table th {
+            font-size: 0.6rem;
+        }
+        .stocks table td {
+            font-size: 0.5rem;
+        }
+
+        .product-image img {
+        width: 50px; 
+        height: 50px;
+        object-fit: cover; 
+        border-radius: 50%;
+        }
+        .product-description {
+            display: none;
+        } 
+        .description-title {
+            display: none;
+        }
+
         }
     </style>
 
@@ -212,7 +262,7 @@ session_start();
                     <div class="list-stock-Field">
                         <div class="content-title d-flex justify-content-between align-items-center">
                             <h2 href="">
-                                <i class="fas fa-fw fa-table"></i>List Stock
+                                <i class="fas fa-fw fa-table"></i>List Produk
                             </h2>
                             <button class="btn btn-primary btn-addstock" data-toggle="modal" data-target="#add-stockModal">Tambah Stock</button>
                         </div>
@@ -222,35 +272,34 @@ session_start();
                                     <thead>
                                         <tr>
                                             <th>#</th>
+                                            <th>Gambar</th>
                                             <th>Nama Produk</th>
-                                            <th>Deskripsi</th>
-                                            <!-- <th>Gambar</th>
-                                            <th>Dibuat Oleh</th>
+                                            <th class="description-title">Deskripsi</th>
                                             <th>Created by</th>
                                             <th>created at</th>
-                                            <th>Update At</th> -->
+                                            <th>Update At</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach($users as $index => $user){ ?>
+                                        <?php foreach($products as $index => $product){ ?>
                                             <tr>
                                                 <td><?= $index +1 ?></td>
-                                                <td class="firstname"><?= $user['lastName'] ?></td>
-                                                <td class="lastname"><?= $user['firstName'] ?> </td>
-                                                <!-- <td class="username"><?= $user['username'] ?></td>
-                                                <td class="level"><?= $user['level'] ?></td>
-                                                <td class="level"><?= $user['level'] ?></td>
-                                                <td class="level"><?= $user['level'] ?></td>
-                                                <td class="level"><?= $user['level'] ?></td> -->
+                                                <td class="firstname product-image">
+                                                    <img src="uploads/products/<?= $product['image'] ?>" alt="">    
+                                                </td>
+                                                <td class="lastname"><?= $product['productName'] ?> </td>
+                                                <td class="username product-description"><?= $product['description'] ?></td>
+                                                <td class="level"><?= $product['created_by'] ?></td>
+                                                <td><?= $product['created_at'] ?></td>
+                                                <td><?= $product['updated_at'] ?></td>
                                                 <td >
-                                                    <a href="#" data-toggle="modal" class="updateUser" data-target="#editModal"
-                                                    data-userid="<?= $user['id'] ?>"
+                                                    <a href="#" data-toggle="modal" class="updateProduct" data-target="#editModal"
+                                                    data-pid="<?= $product['productId'] ?>"
                                                     ><i class="fa-solid fa-pencil" ></i> Edit</a>
-                                                    <a href="" class="deleteUser" 
-                                                    data-userid="<?= $user['id'] ?>"
-                                                    data-fname="<?= $user['firstName'] ?>"
-                                                    data-lname="<?= $user['lastName'] ?>"
+                                                    <a href="" class="deleteProduct" 
+                                                    data-pid="<?= $product['productId'] ?>"
+                                                    data-pname="<?= $product['productName'] ?>"
                                                     ><i class="fa-solid fa-trash"></i> Delete</a>
                                                 </td>
                                             </tr>
@@ -284,7 +333,7 @@ session_start();
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="user-add.php" class="add-user" method="post">
+                    <form action="user-add.php" class="add-user" method="post" enctype="multipart/form-data">
                             <fieldset>
                                 <div class="form-group">
                                     <label for="productName">Masukan Nama Produk</label>
@@ -292,24 +341,12 @@ session_start();
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Masukan Deskripsi</label>
-                                    <textarea type="text" id="description" name="description" class="form-control" placeholder="Deskripsi" required></textarea>
+                                    <textarea type="text" id="description" name="description" class="form-control" placeholder="Deskripsi"></textarea>
                                 </div>
-                                <!-- <div class="form-group">
-                                    <label for="username">Input Username</label>
-                                    <input type="text" id="username" name="username" class="form-control" placeholder="Username" required>
+                                <div class="custom-file">
+                                    <input type="file" id="image" name="image" class="custom-file-input" required>
+                                    <label for="image" class="custom-file-label">Masukan Gambar Produk</label>
                                 </div>
-                                <div class="form-group">
-                                    <label for="password">Input Password</label>
-                                    <input type="text" id="password" name="password" class="form-control" placeholder="Password" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="level">Select Role</label>
-                                    <select id="level" name="level" class="form-control">
-                                        <option>Manager</option>
-                                        <option>Staff</option>
-                                        <option>Supplier</option>
-                                    </select>
-                                </div>            -->
                                 <div class="modal-footer">
                                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                                     <button type="submit" class="btn btn-primary" data-target="#addSuccess">Add Produk</button>
@@ -398,128 +435,149 @@ session_start();
     <script src="js/script.js"></script>
     <script>
     function Script() {
-        this.initialize = function () {
-            this.registerEvents();
-        },
+    var vm = this;
 
-        this.registerEvents = function () {
-            document.addEventListener('click', function (e) {
-                targetElement = e.target
-                var classList = targetElement.classList;
-                
+    this.initialize = function () {
+        this.registerEvents();
+    };
 
+    this.registerEvents = function () {
+        document.addEventListener('click', function (e) {
+            var targetElement = e.target;
+            var classList = targetElement.classList;
 
-                if (classList.contains('deleteUser')) {
-                    e.preventDefault();
-                    userId =targetElement.dataset.userid;
-                    fname =targetElement.dataset.fname;
-                    lname =targetElement.dataset.lname;
-                    fullName = fname + ' ' +lname;
-                    
+            if (classList.contains('deleteProduct')) {
+                e.preventDefault();
 
-                    if(window.confirm('Are you sure to delete ' + fullName + ' ?')) {
-                        $.ajax({
-                            method: 'POST',
-                            data: {
-                                user_id:userId,
-                                f_name:fname,
-                                l_name:lname,
-                            },
-                            url: 'delete-user.php',
-                            dataType: 'json',
-                            success: function(data){
-                                if(data.success){                 
-                                        $('#modalNotificationTitle').text('SUCCESS');
-                                        $('#modalNotificationMessage').text(data.message);
-                                        $('#notificationModal').modal('show');
-                                        $('#notificationModal').find('.btn-primary').click(function () {
-                                            location.reload();
-                                        });                                   
-                                } else window.alert(data.message)
+                var pId = targetElement.dataset.pid;
+                var pName = targetElement.dataset.pname;
+
+                if (window.confirm('Apa anda yakin ingin menghapus produk ' + pName + ' ?')) {
+                    $.ajax({
+                        method: 'POST',
+                        data: {
+                            id: pId,
+                            table: 'products',
+                        },
+                        url: 'delete.php',
+                        dataType: 'json',
+                        success: function (data) {
+                            var message = data.success ?
+                                pName + ' Berhasil Dihapus!' : 'Gagal Dihapus!';
+
+                            if (data.success) {
+                                $('#modalNotificationTitle').text('SUCCESS');
+                                $('#modalNotificationMessage').text(message);
+                                $('#notificationModal').modal('show');
+                                $('#notificationModal').find('.btn-primary').click(function () {
+                                    location.reload();
+                                });
+                            } else {
+                                window.alert(message);
                             }
-                        })
-                    } else {
-                        console.log('will not delete');
-                    }
-                }
-
-                
-
-                if (classList.contains('updateUser')) {
-                    e.preventDefault();
-                    
-                    firstname = targetElement.closest('tr'). querySelector('td.firstname').innerHTML;
-                    lastname = targetElement.closest('tr'). querySelector('td.lastname').innerHTML;
-                    username = targetElement.closest('tr'). querySelector('td.username').innerHTML;
-                    //level = targetElement.closest('tr'). querySelector('td.level').innerHTML;
-                    userId = targetElement.dataset.userid;
-
-                    $('#modalTitle').text('Update User ' + firstname + ' ' + lastname + ' ?');
-                    $('#modalBody').html(`
-                        <form>
-                            <div class="form-group">
-                                <label for="firstname" class="col-form-label">First Name:</label>
-                                <input type="text" class="form-control" id="firstnameUp" value="${firstname}">
-                            </div>
-                            <div class="form-group">
-                                <label for="lastname" class="col-form-label">Last Name:</label>
-                                <input type="text" class="form-control" id="lastnameUp" value="${lastname}">
-                            </div>
-                            <div class="form-group">
-                                <label for="username" class="col-form-label">Username:</label>
-                                <input type="text" class="form-control" id="usernameUp" value="${username}">
-                            </div>
-                        </form>
-                    `);
-
-                    $('#editModal').find('.btn-primary').click(function () {
-                        // Your callback logic here
-                        var isUpdate = true; // You may need to determine this based on user action
-                        callback(isUpdate);
+                        },
                     });
+                } else {
+                    console.log('will not delete');
+                }
+            }
 
-                    function callback(isUpdate) {
-                        if (isUpdate) { // if the user clicks the 'OK' button.
-                            $.ajax({
-                                method: 'POST',
-                                data: {
-                                    userId: userId,
-                                    f_name: document.getElementById('firstnameUp').value,
-                                    l_name: document.getElementById('lastnameUp').value,
-                                    username: document.getElementById('usernameUp').value,
-                                    //level: document.getElementById('level').value,
-                                },
-                                url: 'update-user.php', // Replace with the actual URL for your server-side script
-                                dataType: 'json',
-                                success: function (data) {
-                                    if (data.success) {
-                                        $('#editModal').modal('hide');
-                                        $('#modalNotificationTitle').text('SUCCESS');
-                                        $('#modalNotificationMessage').text('User berhasil Diperbarui');
-                                        $('#notificationModal').modal('show');
-                                        $('#notificationModal').find('.btn-primary').click(function () {
+            if (classList.contains('updateProduct')) {
+                e.preventDefault();
+
+                var productId = targetElement.dataset.pid;
+                vm.showEditDialog(productId);
+            }
+        });
+    };
+
+    this.showEditDialog = function (productId) {
+    // TODO: Add logic to show edit dialog
+    $.get('get-product.php', { productId: productId }, function (productDetails) {
+        console.log(productDetails);
+        $('#modalTitle').text('Update Produk ' + productDetails.productName + ' ?');
+        $('#modalBody').html(`
+            <form action="user-add.php" method="post" enctype="multipart/form-data" id="editProductForm">
+                <fieldset>
+                     <div class="form-group">
+                                <label for="productName">Masukan Nama Produk</label>
+                                <input type="text" id="productName" name="productName" value="${productDetails.productName}" class="form-control" placeholder="Nama Produk">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Masukan Deskripsi</label>
+                                <textarea type="text" id="description" name="description" class="form-control" placeholder="Deskripsi">${productDetails.description}</textarea>
+                            </div>
+                            <div class="custom-file">
+                                <input type="file" id="image" name="image" class="custom-file-input">
+                                <label for="image" class="custom-file-label">Masukan Gambar Produk</label>
+                            </div>
+                </fieldset>
+                <input type="hidden" name="productId" value="${productDetails.productId}" />
+                <button id="editProductModal" type="submit" class="btn btn-primary" style="float: right; margin-top: 2rem;">OK</button>
+            </form>
+        `);
+
+            $('#editModal').find('.modal-footer').hide();
+
+            // Unbind previous click event handlers
+            $('#editProductModal').off('click');
+
+            // Bind the click event after updating the form
+            $('#editModal').find('#editProductForm').submit(function (e) {
+                e.preventDefault();
+                vm.saveUpdateData(this);
+            });
+
+            // Bind the click event to close the modal
+            $('#editProductModal').click(function () {
+                $('#editModal').modal('hide');
+            });
+        }, 'json');
+    };
+
+
+    this.saveUpdateData = function (form) {
+    $.ajax({
+        method: 'POST',
+        data: new FormData(form),
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        url: 'update-product.php',
+        success: function (data) {
+            console.log(data);
+            if(data.success == TRUE){
+                console.log('apakah runing?')
+                $('#editModal').modal('hide');
+                $('#modalNotificationTitle').text('SUCCESS');
+                $('#modalNotificationMessage').text(data.message);
+                $('#notificationModal').modal('show');
+                // Unbind previous click event handlers
+                $('#notificationModal').find('.btn-primary').click(function () {
                                             location.reload();
                                         });
+            } else {
+                    $('#editModal').modal('hide');
+                    $('#modalNotificationTitle').text('GAGAL');
+                    $('#modalNotificationMessage').text(data.message);
+                    $('#notificationModal').modal('show');
+                    // Unbind previous click event handlers
+                    $('#notificationModal').find('.btn-primary').click(function () {
+                        location.reload();
+                    });
+            }
+            
+        },
+    });
+};
 
-                                    } else {
-                                        $('#editModal').modal('hide');
-                                        $('#modalNotificationTitle').text('GAGAL');
-                                        $('#modalNotificationMessage').text('User gagal Diperbarui');
-                                        $('#notificationModal').modal('show');
-                                    }
-                                },
-                            });
-                        }
-                    }
 
-                }
-            });
-        }
-    }
+}
 
-    var scriptInstance = new Script();
-    scriptInstance.initialize();
-    </script>
+var scriptInstance = new Script();
+scriptInstance.initialize();
+</script>
+
 
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>

@@ -30,26 +30,26 @@ if($cek > 0){
 		header("location:index.php");
  
 	// cek jika user login sebagai pegawai
-	}else if($data['level']=="manager"){
+	}else if($data['level']=="Manager"){
 		// buat session login dan username
 		$_SESSION['username'] = $username;
-		$_SESSION['level'] = "manager";
+		$_SESSION['level'] = "Manager";
 		// alihkan ke halaman dashboard pegawai
 		header("location:manager.php");
 
 	// cek jika user login sebagai pegawai
-	}else if($data['level']=="staff"){
+	}else if($data['level']=="Staff"){
 		// buat session login dan username
 		$_SESSION['username'] = $username;
-		$_SESSION['level'] = "staff";
+		$_SESSION['level'] = "Staff";
 		// alihkan ke halaman dashboard pegawai
 		header("location:staff.php");
  
 	// cek jika user login sebagai pengurus
-	}else if($data['level']=="supplier"){
+	}else if($data['level']=="Supplier"){
 		// buat session login dan username
 		$_SESSION['username'] = $username;
-		$_SESSION['level'] = "supplier";
+		$_SESSION['level'] = "Supplier";
 		// alihkan ke halaman dashboard pengurus
 		header("location:supplier.php");
  
